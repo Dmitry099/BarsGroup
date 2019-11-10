@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Вопросы</title>
+</head>
+<body>
+<div align="center">
+    <h1>Форма ответа на вопросы</h1>
+    <form method="post">
+    {{ formset.management_form }}
+    {% for form in formset %}
+        {% csrf_token %}
+        <p>
+            {{ form.question }}
+            Ответ:
+            {{ form.result }}
+            {{ form.recruter }}
+        </p>
+    {% endfor %}
+    <button type="submit">Сохранить</button>
+</form>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% load staticfiles %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <link rel=”stylesheet” href=”{% static 'common.css' %}”>
+</head>
+<body>
+    <p style="text-align: center">
+        <a href="{% url 'choosesith' %}">Для Cитхов</a> | <a href="{% url 'recruter' %}">Для рекрутов</a>
+</body>
+</html>

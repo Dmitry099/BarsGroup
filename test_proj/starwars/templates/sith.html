@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список рекрутеров</title>
+</head>
+<body>
+<div align="center">
+<h1>Список рекрутеров (не из Руки Тени)</h1>
+    {% for recruter in recruters %}
+        <p>{{ recruter.name }}</p>
+        <table border="2">
+            <tr>
+                <th>Вопрос</th>
+                <th>Ответ</th>
+            </tr>
+            {% for answer in recruter.answers.all %}
+                <tr>
+                    <td>
+                        {{ answer.question.content }}
+                    </td>
+                    <td>
+                        {% if answer.result == True %} Да {% else %} Нет {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <p></p>
+        <a href="{% url 'enroll' recruter_id=recruter.id sith_id=sith_id %}">Зачислить {{ recruter.name }} в Руку Тени</a>
+    {% endfor %}
+    <p><a href="{% url 'index' %}">На главную</a></p>
+</div>
+</body>
+</html>
