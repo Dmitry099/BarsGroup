@@ -14,14 +14,12 @@
             </tr>
             {% for sith in siths %}
             <tr>
-                {% if sith.recruters_count > 1 %}
                 <td>
                 Ситх {{ sith.name }}
                 </td>
                 <td>
-                    {{ sith.recruters_count }}
+                    {{ sith.recruters_number }}
                 </td>
-                {% endif %}
             </tr>
             {% endfor %}
         <p></p>

@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.forms import formset_factory
 from django.core.mail import send_mail
 from urllib import parse
+from django.db.models import Count
 
 from starwars.sith.forms import RecruterForm, AnswerForm
 from starwars.sith.models import Question, TestExam, Recruter, Sith
@@ -19,6 +20,7 @@ class RecruterView(FormView):
 
 
 class AnswerView(View):
+
     template_name = 'question.html'
 
     def get(self, request, recruter_id):
@@ -57,7 +59,7 @@ class SithView(View):
     template_name = 'sith.html'
 
     def get(self, request):
-        recruters = Recruter.objects.filter(is_shadow_hand=False,
+        recruters = Recruter.objects.filter(sith=None,
                                             answers__isnull=False).distinct()
         current_url = request.build_absolute_uri()
         sith_id = parse.parse_qs(parse.urlparse(current_url).query)['sith_id'][0]
@@ -71,10 +73,8 @@ class AllSithsView(View):
     template_name = 'allsiths.html'
 
     def get(self, request):
-        siths = Sith.objects.order_by('name')
-        for sith in siths:
-            recruters = Recruter.objects.filter(is_shadow_hand=True, sith=sith.id).count
-            sith.recruters_count = recruters
+        siths = (Sith.objects.annotate(recruters_number=Count('recruters')).
+                 order_by('name'))
 
         return render(request, self.template_name, context={'siths': siths})
 
@@ -84,26 +84,28 @@ class SithsMore1View(View):
     template_name = 'sithsmore1.html'
 
     def get(self, request):
-        siths = Sith.objects.order_by('name')
-        for sith in siths:
-            recruters = Recruter.objects.filter(is_shadow_hand=True, sith=sith.id).count
-            sith.recruters_count = recruters
+        siths = (Sith.objects.annotate(recruters_number=Count('recruters')).
+                 filter(recruters_number__gt=1).order_by('name'))
 
         return render(request, self.template_name, context={'siths': siths})
 
 
 class EnrollRecruterView(View):
     def get(self, request, recruter_id, sith_id):
-        sith = Sith.objects.get(id=sith_id)
-        recruter = get_object_or_404(Recruter, id=recruter_id)
-        recruter.is_shadow_hand = True
-        recruter.sith = sith
-        recruter.save()
-        send_mail(
-            'Сообщение от Ситха',
-            'Вы зачислены в Руку тени',
-            'from@sith.com',
-            [recruter.email],
-            fail_silently=False,
-        )
-        return redirect('index')
+        sith = (Sith.objects.annotate(recruters_number=Count('recruters')).
+                filter(id=sith_id))
+        if sith[0].recruters_number >= 3:
+            return redirect('counterror')
+        else:
+            recruter = get_object_or_404(Recruter, id=recruter_id)
+            recruter.sith = sith[0]
+            recruter.save()
+            send_mail(
+                'Сообщение от Ситха',
+                'Вы зачислены в Руку тени',
+                'from@sith.com',
+                [recruter.email],
+                fail_silently=False,
+            )
+
+            return redirect('index')

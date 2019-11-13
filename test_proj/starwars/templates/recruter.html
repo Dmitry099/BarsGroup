@@ -7,7 +7,7 @@
 <body>
 <div align="center">
     <h1>Форма создания Рекрутера</h1>
-    <form method="POST">
+    <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Продолжить</button>

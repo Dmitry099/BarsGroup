@@ -1,5 +1,4 @@
 import sqlite3 as lite
-import sys
 
 con = lite.connect('db.sqlite3')
 
@@ -16,4 +15,3 @@ with con:
     cur.execute("PRAGMA table_info(sith_recruter);")
     rows = cur.fetchall()
     print(rows)
-    # con.commit()

@@ -18,9 +18,6 @@ class Sith(models.Model):
                                on_delete=models.PROTECT,
                                verbose_name='Планета',
                                related_name='siths')
-    recruters_count = models.PositiveIntegerField('Количество рекрутов',
-                                                  null=True,
-                                                  default=None)
 
     class Meta:
         verbose_name = 'Ситх'
@@ -38,12 +35,11 @@ class Recruter(models.Model):
                                related_name='recruters')
     age = models.PositiveIntegerField('Возраст')
     email = models.EmailField('Email', null=True, blank=True)
-    is_shadow_hand = models.BooleanField('Рука тени', default=False)
     sith = models.ForeignKey(Sith,
-                            on_delete=models.CASCADE,
-                            verbose_name='Ситх',
-                            related_name='recruters',
-                            null=True)
+                             on_delete=models.CASCADE,
+                             verbose_name='Ситх',
+                             related_name='recruters',
+                             null=True)
 
     class Meta:
         verbose_name = 'Рекрутер'
