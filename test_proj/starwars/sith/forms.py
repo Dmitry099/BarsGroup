@@ -7,7 +7,7 @@ class RecruterForm(forms.ModelForm):
 
     class Meta:
         model = Recruter
-        exclude = ('is_shadow_hand', 'sith')
+        exclude = ('sith')
 
 
 class AnswerForm(forms.ModelForm):
